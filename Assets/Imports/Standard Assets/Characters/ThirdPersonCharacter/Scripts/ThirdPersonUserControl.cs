@@ -12,7 +12,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private Vector3 m_CamForward;             // The current forward direction of the camera
         private Vector3 m_Move;
         private bool m_Jump;                      // the world-relative desired move direction, calculated from the camForward and user input.
-
+        private Animator m_animator;
         
         private void Start()
         {
@@ -30,6 +30,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
             // get the third person character ( this should never be null due to require component )
             m_Character = GetComponent<ThirdPersonCharacter>();
+            m_animator = GetComponent<Animator>();
         }
 
 
@@ -38,6 +39,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (!m_Jump)
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                if (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded")){
+                    m_animator.SetTrigger("Attack");
+                }
             }
         }
 
@@ -64,7 +72,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
 #if !MOBILE_INPUT
 			// walk speed multiplier
-	        if (Input.GetKey(KeyCode.LeftShift)) m_Move =m_Move * 0.5f;
+	        if (Input.GetKey(KeyCode.LeftControl)) m_Move =m_Move * 0.5f;
 #endif
 
             // pass all parameters to the character control script
